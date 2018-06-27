@@ -6,17 +6,21 @@ var startZoom = %begin_globals_asset_metadata_ObjectType^contains:Campus%%global
 
 var myMap = new Mazemap.Map({
 container: 'map',
-%begin_globals_asset_assetid^eq:43989% /* special initialisation for the directions page */
-%else_globals%
 campuses: %globals_asset_metadata_CampusID^empty:200%,
 center: {lng: %globals_asset_metadata_Longitude^empty:{asset_parent^as_asset:asset_metadata_Longitude}%, lat: %globals_asset_metadata_Latitude^empty:{asset_parent^as_asset:asset_metadata_Latitude}%},
 zoom: startZoom,
 zLevel: %globals_asset_metadata_Level^empty:0%,
-%else_globals%
 style: 'https://api.mapbox.com/styles/v1/maps-unimelb/'+ mapStyle + '?access_token=' + token
 
 });
-
+/* special initialisation for the directions page
+%begin_globals_asset_assetid^eq:43989%
+campuses: %globals_get_assetA^as_asset:asset_metadata_CampusID^empty:200%,
+center: {lng: %globals_asset_metadata_Longitude^empty:{asset_parent^as_asset:asset_metadata_Longitude}%, lat: %globals_asset_metadata_Latitude^empty:{asset_parent^as_asset:asset_metadata_Latitude}%},
+zoom: startZoom,
+zLevel: %globals_asset_metadata_Level^empty:0%,
+%end_globals%
+*/
 /* add the interface widgets */
 
 myMap.addControl(new Mazemap.mapboxgl.NavigationControl());
