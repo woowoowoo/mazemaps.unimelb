@@ -1,0 +1,291 @@
+<script>
+/* begin with stuff for all pages */
+var token = 'pk.eyJ1IjoibWFwcy11bmltZWxiIiwiYSI6ImNqaGZvZ3NkZjFkcjEzY24ycDRoMjhlOTIifQ.aWhq82khhgathoavkKUTlg';
+var mapStyle = 'cjghf66go00262rqdu3htp33o';
+var startZoom = %begin_globals_asset_metadata_ObjectType^contains:Campus%%globals_asset_metadata_Zoom^empty:15%%else_begin_globals_asset_metadata_ObjectType^contains:Group%%globals_asset_metadata_Zoom^empty:16%%else_begin_globals_asset_metadata_ObjectType^contains:Building%%globals_asset_metadata_Zoom^empty:17%%else_globals%%globals_asset_metadata_Zoom^empty:18%%end_globals%;
+
+var myMap = new Mazemap.Map({
+container: 'map',
+campuses: %globals_asset_metadata_CampusID^empty:200%,
+center: {lng: %globals_asset_metadata_Longitude^empty:{asset_parent^as_asset:asset_metadata_Longitude}%, lat: %globals_asset_metadata_Latitude^empty:{asset_parent^as_asset:asset_metadata_Latitude}%},
+zoom: startZoom,
+zLevel: %globals_asset_metadata_Level^empty:0%,
+style: 'https://api.mapbox.com/styles/v1/maps-unimelb/'+ mapStyle + '?access_token=' + token
+
+});
+
+/* add the interface widgets */
+
+myMap.addControl(new Mazemap.mapboxgl.NavigationControl());
+myMap.addControl(new Mazemap.mapboxgl.GeolocateControl({
+positionOptions: {
+enableHighAccuracy: true
+},
+trackUserLocation: true
+}));
+myMap.addControl(new Mazemap.mapboxgl.FullscreenControl());
+
+/* search tool */
+var mySearch = new Mazemap.Search.SearchController({
+campusid: %globals_asset_metadata_CampusID^empty:200%,
+
+rows: 10,
+
+withpois: true,
+withbuilding: true,
+withtype: false,
+withcampus: false,
+
+resultsFormat: 'geojson'
+});
+
+var mySearchInput = new Mazemap.Search.SearchInput({
+container: document.getElementById('search-input-container'),
+input: document.getElementById('searchInput'),
+suggestions: document.getElementById('suggestions'),
+searchController: mySearch
+}).on('itemclick', function(e){
+
+var poiFeature = e.item;
+placePoiMarker( poiFeature );
+});
+
+var resultMarker = new Mazemap.MazeMarker({
+color: 'rgb(253, 117, 38)',
+innerCircle: true,
+innerCircleColor: '#FFF',
+size: 34,
+innerCircleScale: 0.5,
+zLevel: 1
+})
+
+function placePoiMarker(poi){
+// Get a center point for the POI, because the data can return a polygon instead of just a point sometimes
+var lngLat = Mazemap.Util.getPoiLngLat(poi);
+var zLevel = poi.properties.zValue;
+
+resultMarker
+.setLngLat(lngLat)
+.setZLevel(poi.properties.zValue)
+.addTo(myMap);
+
+myMap.zLevel = zLevel;
+
+myMap.flyTo({center: lngLat, zoom: 19, duration: 2000});
+}
+
+myMap.getCanvas().addEventListener('focus', function(){
+mySearchInput.hideSuggestions();
+});
+
+/* end of standard variables, widgets and search element */
+/* begin specific page types */
+
+%begin_globals_asset_metadata_ObjectType^contains:Campus%
+
+
+%else_begin_globals_asset_metadata_ObjectType^contains:Group%
+
+myMap.on('load', function(){
+// MazeMap ready
+
+
+// Add a source layer to use with the layer for rendering geojson features
+myMap.addSource("markers", {
+"type": "geojson",
+"data": {
+"type": "FeatureCollection",
+"features": geojson
+}
+});
+
+myMap.addLayer({
+"id": "markers",
+"type": "circle",
+"source": "markers",
+"paint": {
+"circle-color": "#ff334f",
+"circle-radius": 7,
+"circle-stroke-width": 2,
+"circle-stroke-color": "#fff"
+}
+});
+
+var popup = new Mazemap.Popup({
+closeButton: false,
+closeOnClick: false
+});
+
+myMap.on('mouseenter', 'markers', function(e){
+
+popup.remove(); 
+
+var lngLat = e.lngLat;
+var zLevel = myMap.zLevel;
+
+var features = myMap.queryRenderedFeatures(e.point, {layers: ['markers']});
+if(features && features.length > 0)
+{
+// We clicked on an existing marker feature
+// Show a popup here
+popup.setLngLat(features[0].geometry.coordinates)
+.setHTML(features[0].properties.description)
+.addTo(myMap);
+}
+
+});
+
+/*myMap.on('mousemove', function(e) {
+var features = myMap.queryRenderedFeatures(e.point, { layers: ['markers'] });
+// Change the cursor style as a UI indicator.
+//myMap.getCanvas().style.cursor = (features.length) ? 'pointer' : '';
+
+if (!features.length) {
+popup.remove();
+return;
+}
+
+var feature = features[0];
+
+// Populate the popup and set its coordinates
+// based on the feature found.
+popup.setLngLat(feature.geometry.coordinates)
+.setHTML(feature.properties.description)
+.addTo(map);
+});*/
+
+/*myMap.on('mouseleave', 'markers', function() {
+popup.remove();
+});*/
+
+
+
+});
+
+%else_begin_globals_asset_metadata_ObjectType^contains:Building%
+
+myMap.on('load', function(){
+// MazeMap ready
+%begin_globals_asset_metadata_BuildingID^trim%
+Mazemap.Data.getBuilding(%globals_asset_metadata_BuildingID%).then( building => {
+var lngLat = Mazemap.Util.getPoiLngLat(building);
+building.properties.zLevel = 0;
+var marker = new Mazemap.MazeMarker( {
+color: "MazeBlue",
+size: 36,
+zLevel: building.properties.zLevel
+} ).setLngLat( lngLat ).addTo(myMap);
+marker.zLevelToggle();
+
+myMap.highlighter = new Mazemap.Highlighter( myMap, {
+showOutline: true, // optional
+showFill: true, // optional,
+outlineColor: Mazemap.Util.Colors.MazeColors.MazeBlue, // optional
+fillColor: Mazemap.Util.Colors.MazeColors.MazeBlue // optional
+});
+if(building.geometry.type === "Polygon"){
+myMap.highlighter.highlight(building);
+}
+
+myMap.setCenter(lngLat);
+});
+%else_globals_asset_metadata_BuildingID%
+var lngLat = myMap.getCenter();
+
+var marker = new Mazemap.MazeMarker( {
+color: "MazeBlue",
+size: 36,
+zLevel: 1
+} ).setLngLat( lngLat ).addTo(myMap);
+%end_globals_asset_metadata_BuildingID%
+
+});
+
+%else_begin_globals_asset_metadata_ObjectType^contains:POI%
+
+myMap.on('load', function(){
+// MazeMap ready
+%begin_globals_asset_metadata_POI^trim%
+Mazemap.Data.getPoi(%globals_asset_metadata_POI%).then( poi => {
+var lngLat = Mazemap.Util.getPoiLngLat(poi);
+
+var marker = new Mazemap.MazeMarker( {
+color: "MazeBlue",
+size: 36,
+zLevel: poi.properties.zLevel
+} ).setLngLat( lngLat ).addTo(myMap);
+marker.zLevelToggle();
+myMap.highlighter = new Mazemap.Highlighter( myMap, {
+showOutline: true, // optional
+showFill: true, // optional,
+outlineColor: Mazemap.Util.Colors.MazeColors.MazeBlue, // optional
+fillColor: Mazemap.Util.Colors.MazeColors.MazeBlue // optional
+});
+if(poi.geometry.type === "Polygon"){
+myMap.highlighter.highlight(poi);
+}
+
+myMap.setCenter(lngLat);
+
+});
+
+%else_globals_asset_metadata_POI%
+var lngLat = myMap.getCenter();
+
+var marker = new Mazemap.MazeMarker( {
+color: "MazeBlue",
+size: 36,
+zLevel: 1
+} ).setLngLat( lngLat ).addTo(myMap);
+%end_globals_asset_metadata_POI%
+
+});
+
+%else_begin_globals_asset_assetid^eq:43989%
+/* the stand alone directions page */
+
+var routeController;
+
+var pointA = { poiId: 658370};
+/*	var pointB = { poiId: 658577}; */
+
+myMap.on('load', function(){
+
+routeController = new Mazemap.RouteController(myMap, {
+routeLineColorPrimary: '#0099EA',
+routeLineColorSecondary: '#888888'
+});
+setRoute(pointA, pointB);
+});
+
+function setRoute( start, dest ){
+routeController.clear(); // Clear existing route, if any
+
+Mazemap.Data.getRouteJSON(start, dest)
+.then(function(geojson){
+console.log('@ geojson', geojson);
+routeController.setPath(geojson);
+var bounds = Mazemap.Util.Turf.bbox(geojson);
+myMap.fitBounds( bounds, {padding: 100} );
+});
+}
+
+
+%else_globals%
+/* standard pages */
+
+%end_globals%
+</script>
+
+<script type="application/ld+json">
+{
+"@context": "http://schema.org",
+"@type": "Place",
+"geo": {
+"@type": "GeoCoordinates",
+"latitude": "%globals_asset_metadata_Latitude^empty:{asset_parent^as_asset:asset_metadata_Latitude}^maxchars:8%",
+"longitude": "%globals_asset_metadata_Longitude^empty:{asset_parent^as_asset:asset_metadata_Longitude}^maxchars:8%"
+},
+"name": "%globals_asset_name%"
+}
+</script>
