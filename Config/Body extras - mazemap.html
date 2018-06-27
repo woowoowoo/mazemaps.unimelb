@@ -247,16 +247,21 @@ zLevel: 1
 var routeController;
 
 %begin_globals_get_pointA%
+/* poiID: %globals_get_pointA% was supplied */
 var pointA = { poiId: %globals_get_pointA%};
-%else_begin_globals_assetA%
-%begin_globals_assetA^as_asset:asset_metadata_poiid%
-var pointA = { poiId: %globals_assetA^as_asset:asset_metadata_poiid%};
+%else_begin_globals_get_assetA%
+%begin_globals_get_assetA^as_asset:asset_metadata_poiID%
+/* assetid: %globals_get_assetA% was supplied and it has a poiID */
+var pointA = { poiId: %globals_get_assetA^as_asset:asset_metadata_poiid%};
 %else_globals%
-var pointA = { lngLat: {lng: %globals_assetA^as_asset:asset_metadata_Longitude%, lat: %globals_assetA^as_asset:asset_metadata_Latitude%}, zLevel: %globals_assetA^as_asset:asset_metadata_Level^empty:0%};
+/* assetid: %globals_get_assetA% was supplied and we fell back to lngLat */
+var pointA = { lngLat: {lng: %globals_get_assetA^as_asset:asset_metadata_Longitude%, lat: %globals_get_assetA^as_asset:asset_metadata_Latitude%}, zLevel: %globals_get_assetA^as_asset:asset_metadata_Level^empty:0%};
 %end_globals%
 %else_begin_globals_lngA%
+/* a longitude was supplied (and hopefully a latitude!) */
 var pointA = { lngLat: {lng: %globals_get_lngA%, lat: %globals_get_latA%}, zLevel: %globals_get_zA^empty:0%};
 %else_globals%
+/* no start point was provided */
 var pointA;
 %end_globals%
 
