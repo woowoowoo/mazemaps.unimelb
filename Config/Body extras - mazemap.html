@@ -8,16 +8,12 @@ var myMap = new Mazemap.Map({
 zoom: startZoom,
 container: 'map',
 style: 'https://api.mapbox.com/styles/v1/maps-unimelb/'+ mapStyle + '?access_token=' + token,
-interactive: true,
-zLevelUpdater: true,
-zLevelControl: false,
 campuses: %globals_asset_metadata_CampusID^empty:200%,
 center: {lng: %globals_asset_metadata_Longitude^empty:{asset_parent^as_asset:asset_metadata_Longitude}%, lat: %globals_asset_metadata_Latitude^empty:{asset_parent^as_asset:asset_metadata_Latitude}%},
 zLevel: %globals_asset_metadata_Level^empty:0%
 });
 
 
-myMap.on('load', function(){
 /* basic map nav tools */
 myMap.addControl(new Mazemap.mapboxgl.NavigationControl());
 
@@ -88,7 +84,7 @@ mySearchInput.hideSuggestions();
 /* flexible height floor bar */
 floorBar = new Mazemap.ZLevelBarControl( {
 autoUpdate: true,
-maxHeight: 200
+maxHeight: 300
 } );
 myMap.addControl( floorBar, 'bottom-left' );
 
@@ -102,9 +98,6 @@ myMap.on('resize', onResize);
 
 onResize();
 
-/* trigger function for custom page types */
-loadMore();
-});
 
 %begin_globals_asset_metadata_ObjectType^contains:Campus%
 
@@ -113,7 +106,6 @@ loadMore();
 
 myMap.on('load', function(){
 // MazeMap ready
-
 
 // Add a source layer to use with the layer for rendering geojson features
 myMap.addSource("markers", {
