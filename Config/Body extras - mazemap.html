@@ -250,9 +250,9 @@ var routeController;
 /* poiID: %globals_get_pointA% was supplied */
 var pointA = { poiId: %globals_get_pointA%};
 %else_begin_globals_get_assetA%
-%begin_globals_get_assetA^as_asset:asset_metadata_poiID%
+%begin_globals_get_assetA^as_asset:asset_metadata_POI%
 /* assetid: %globals_get_assetA% was supplied and it has a poiID */
-var pointA = { poiId: %globals_get_assetA^as_asset:asset_metadata_poiid%};
+var pointA = { poiId: %globals_get_assetA^as_asset:asset_metadata_POI%};
 %else_globals%
 /* assetid: %globals_get_assetA% was supplied and we fell back to lngLat */
 var pointA = { lngLat: {lng: %globals_get_assetA^as_asset:asset_metadata_Longitude%, lat: %globals_get_assetA^as_asset:asset_metadata_Latitude%}, zLevel: %globals_get_assetA^as_asset:asset_metadata_Level^empty:0%};
