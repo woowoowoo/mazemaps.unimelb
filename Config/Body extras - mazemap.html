@@ -266,6 +266,7 @@ var pointA;
 %end_globals%
 
 %begin_globals_get_pointB%
+/* poiID: %globals_get_pointB% was supplied */
 var pointB = { poiId: %globals_get_pointB%};
 %else_begin_globals_get_assetB%
 %begin_globals_get_assetB^as_asset:asset_metadata_POI%
@@ -276,8 +277,10 @@ var pointB = { poiId: %globals_get_assetB^as_asset:asset_metadata_POI%};
 var pointB = { lngLat: {lng: %globals_get_assetB^as_asset:asset_metadata_Longitude%, lat: %globals_get_assetB^as_asset:asset_metadata_Latitude%}, zLevel: %globals_get_assetB^as_asset:asset_metadata_Level^empty:0%};
 %end_globals%
 %else_begin_globals_lngB%
+/* a longitude was supplied (and hopefully a latitude!) */
 var pointB = { lngLat: {lng: %globals_get_lngB%, lat: %globals_get_latB%}, zLevel: %globals_get_zB^empty:0%};
 %else_globals%
+/* no end point was provided */
 var pointB;
 %end_globals%
 
