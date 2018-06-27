@@ -8,30 +8,19 @@ var myMap = new Mazemap.Map({
 zoom: startZoom,
 container: 'map',
 style: 'https://api.mapbox.com/styles/v1/maps-unimelb/'+ mapStyle + '?access_token=' + token,
+interactive: true,
+zLevelUpdater: true,
+zLevelControl: false,
 campuses: %globals_asset_metadata_CampusID^empty:200%,
 center: {lng: %globals_asset_metadata_Longitude^empty:{asset_parent^as_asset:asset_metadata_Longitude}%, lat: %globals_asset_metadata_Latitude^empty:{asset_parent^as_asset:asset_metadata_Latitude}%},
 zLevel: %globals_asset_metadata_Level^empty:0%
 });
 
+
+myMap.on('load', function(){
 /* add the interface widgets */
 /* basic map nav tools */
 myMap.addControl(new Mazemap.mapboxgl.NavigationControl());
-/* flexible floor level bar */
-floorBar = new Mazemap.ZLevelBarControl( {
-autoUpdate: true,
-maxHeight: 400 // Can also set initial maxHeight if no need for auto resize
-} );
-myMap.addControl( floorBar, 'bottom-left' );
-
-function onResize(){
-var height = myMap.getCanvas().clientHeight;
-var maxHeight = height - 50; // 50 pixels account for margins and spacing
-floorBar.setMaxHeight(maxHeight);
-};
-
-myMap.on('resize', onResize);
-
-onResize();
 
 /* geolocation control */
 myMap.addControl(new Mazemap.mapboxgl.GeolocateControl({
@@ -97,6 +86,22 @@ mySearchInput.hideSuggestions();
 
 /* end of standard variables, widgets and search element */
 /* begin specific page types */
+floorBar = new Mazemap.ZLevelBarControl( {
+autoUpdate: true,
+maxHeight: 200 // Can also set initial maxHeight if no need for auto resize
+} );
+myMap.addControl( floorBar, 'bottom-left' );
+
+function onResize(){
+var height = myMap.getCanvas().clientHeight;
+var maxHeight = height - 50; // 50 pixels account for margins and spacing
+floorBar.setMaxHeight(maxHeight);
+};
+
+myMap.on('resize', onResize);
+
+onResize();
+});
 
 %begin_globals_asset_metadata_ObjectType^contains:Campus%
 
