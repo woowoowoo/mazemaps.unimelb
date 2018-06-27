@@ -14,8 +14,26 @@ zLevel: %globals_asset_metadata_Level^empty:0%
 });
 
 /* add the interface widgets */
-
+/* basic map nav tools */
 myMap.addControl(new Mazemap.mapboxgl.NavigationControl());
+/* flexible floor level bar */
+floorBar = new Mazemap.ZLevelBarControl( {
+autoUpdate: true,
+maxHeight: 400 // Can also set initial maxHeight if no need for auto resize
+} );
+myMap.addControl( floorBar, 'bottom-left' );
+
+function onResize(){
+var height = myMap.getCanvas().clientHeight;
+var maxHeight = height - 50; // 50 pixels account for margins and spacing
+floorBar.setMaxHeight(maxHeight);
+};
+
+myMap.on('resize', onResize);
+
+onResize();
+
+/* geolocation control */
 myMap.addControl(new Mazemap.mapboxgl.GeolocateControl({
 positionOptions: {
 enableHighAccuracy: true
