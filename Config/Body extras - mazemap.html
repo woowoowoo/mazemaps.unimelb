@@ -244,6 +244,31 @@ zLevel: 1
 %else_begin_globals_asset_assetid^eq:43989%
 /* the stand alone directions page */
 
+var routeController;
+
+var start = "658370";
+var dest = "658577";
+
+myMap.on('load', function(){
+
+routeController = new Mazemap.RouteController(myMap, {
+routeLineColorPrimary: '#0099EA',
+routeLineColorSecondary: '#888888'
+});
+setRoute(start1, dest1);
+});
+
+function setRoute( start, dest ){
+routeController.clear(); // Clear existing route, if any
+
+Mazemap.Data.getRouteJSON(start, dest)
+.then(function(geojson){
+console.log('@ geojson', geojson);
+routeController.setPath(geojson);
+var bounds = Mazemap.Util.Turf.bbox(geojson);
+myMap.fitBounds( bounds, {padding: 100} );
+});
+}
 
 
 %else_globals%
