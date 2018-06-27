@@ -246,8 +246,21 @@ zLevel: 1
 
 var routeController;
 
-var pointA = { poiId: 658370};
-var pointB = { poiId: 658577};
+%begin_globals_get_pointA%
+var pointA = { poiId: %globals_get_pointA%};
+%else_begin_globals_lngA%
+var pointA = { lngLat: {lng: %globals_get_lngA%, lat: %globals_get_latA%}, zLevel: %globals_get_zA^empty:0%};
+%else_globals%
+var pointA;
+%end_globals%
+
+%begin_globals_get_pointB%
+var pointB = { poiId: %globals_get_pointB%};
+%else_begin_globals_lngB%
+var pointB = { lngLat: {lng: %globals_get_lngB%, lat: %globals_get_latB%}, zLevel: %globals_get_zB^empty:0%};
+%else_globals%
+var pointB;
+%end_globals%
 
 myMap.on('load', function(){
 
