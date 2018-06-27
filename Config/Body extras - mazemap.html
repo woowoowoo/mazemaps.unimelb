@@ -257,7 +257,7 @@ var pointA = { poiId: %globals_get_assetA^as_asset:asset_metadata_POI%};
 /* assetid: %globals_get_assetA% was supplied and we fell back to lngLat */
 var pointA = { lngLat: {lng: %globals_get_assetA^as_asset:asset_metadata_Longitude%, lat: %globals_get_assetA^as_asset:asset_metadata_Latitude%}, zLevel: %globals_get_assetA^as_asset:asset_metadata_Level^empty:0%};
 %end_globals%
-%else_begin_globals_lngA%
+%else_begin_globals_get_lngA%
 /* a longitude was supplied (and hopefully a latitude!) */
 var pointA = { lngLat: {lng: %globals_get_lngA%, lat: %globals_get_latA%}, zLevel: %globals_get_zA^empty:0%};
 %else_globals%
@@ -276,7 +276,7 @@ var pointB = { poiId: %globals_get_assetB^as_asset:asset_metadata_POI%};
 /* assetid: %globals_get_assetB% was supplied and we fell back to lngLat */
 var pointB = { lngLat: {lng: %globals_get_assetB^as_asset:asset_metadata_Longitude%, lat: %globals_get_assetB^as_asset:asset_metadata_Latitude%}, zLevel: %globals_get_assetB^as_asset:asset_metadata_Level^empty:0%};
 %end_globals%
-%else_begin_globals_lngB%
+%else_begin_globals_get_lngB%
 /* a longitude was supplied (and hopefully a latitude!) */
 var pointB = { lngLat: {lng: %globals_get_lngB%, lat: %globals_get_latB%}, zLevel: %globals_get_zB^empty:0%};
 %else_globals%
