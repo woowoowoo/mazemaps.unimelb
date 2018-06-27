@@ -246,8 +246,8 @@ zLevel: 1
 
 var routeController;
 
-var start1 = { poiId: 658370};
-var dest1 = { poiId: 658577};
+var pointA = { poiId: 658370};
+var pointB = { poiId: 658577};
 
 myMap.on('load', function(){
 
@@ -255,7 +255,7 @@ routeController = new Mazemap.RouteController(myMap, {
 routeLineColorPrimary: '#0099EA',
 routeLineColorSecondary: '#888888'
 });
-setRoute(start1, dest1);
+setRoute(pointA, pointB);
 });
 
 function setRoute( start, dest ){
