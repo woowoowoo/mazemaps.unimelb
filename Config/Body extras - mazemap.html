@@ -248,6 +248,12 @@ var routeController;
 
 %begin_globals_get_pointA%
 var pointA = { poiId: %globals_get_pointA%};
+%else_begin_globals_assetA%
+%begin_globals_assetA^as_asset:asset_metadata_poiid%
+var pointA = { poiId: %globals_assetA^as_asset:asset_metadata_poiid%};
+%else_globals%
+var pointA = { lngLat: {lng: %globals_assetA^as_asset:asset_metadata_Longitude%, lat: %globals_assetA^as_asset:asset_metadata_Latitude%}, zLevel: %globals_assetA^as_asset:asset_metadata_Level^empty:0%};
+%end_globals%
 %else_begin_globals_lngA%
 var pointA = { lngLat: {lng: %globals_get_lngA%, lat: %globals_get_latA%}, zLevel: %globals_get_zA^empty:0%};
 %else_globals%
