@@ -1,5 +1,5 @@
 <script>
-
+/* begin with stuff for all pages */
 var token = 'pk.eyJ1IjoibWFwcy11bmltZWxiIiwiYSI6ImNqaGZvZ3NkZjFkcjEzY24ycDRoMjhlOTIifQ.aWhq82khhgathoavkKUTlg';
 var mapStyle = 'cjghf66go00262rqdu3htp33o';
 var startZoom = %begin_globals_asset_metadata_ObjectType^contains:Campus%%globals_asset_metadata_Zoom^empty:15%%else_begin_globals_asset_metadata_ObjectType^contains:Group%%globals_asset_metadata_Zoom^empty:16%%else_begin_globals_asset_metadata_ObjectType^contains:Building%%globals_asset_metadata_Zoom^empty:17%%else_globals%%globals_asset_metadata_Zoom^empty:18%%end_globals%;
@@ -14,6 +14,8 @@ style: 'https://api.mapbox.com/styles/v1/maps-unimelb/'+ mapStyle + '?access_tok
 
 });
 
+/* add the interface widgets */
+
 myMap.addControl(new Mazemap.mapboxgl.NavigationControl());
 myMap.addControl(new Mazemap.mapboxgl.GeolocateControl({
 positionOptions: {
@@ -23,8 +25,7 @@ trackUserLocation: true
 }));
 myMap.addControl(new Mazemap.mapboxgl.FullscreenControl());
 
-/* begin search element */
-
+/* search tool */
 var mySearch = new Mazemap.Search.SearchController({
 campusid: %globals_asset_metadata_CampusID^empty:200%,
 
@@ -77,7 +78,9 @@ myMap.getCanvas().addEventListener('focus', function(){
 mySearchInput.hideSuggestions();
 });
 
-/* end search element */
+/* end of standard variables, widgets and search element */
+/* begin specific page types */
+
 %begin_globals_asset_metadata_ObjectType^contains:Campus%
 
 
