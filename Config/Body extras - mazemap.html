@@ -10,10 +10,10 @@
 //        style: 'https://api.mapbox.com/styles/v1/maps-unimelb/'+ mapStyle + '?access_token=' + token,
         campuses: %globals_asset_metadata_CampusID^empty:200%,
         center: {lng: %globals_asset_metadata_Longitude^empty:{asset_parent^as_asset:asset_metadata_Longitude}%, lat: %globals_asset_metadata_Latitude^empty:{asset_parent^as_asset:asset_metadata_Latitude}%},
-        zLevel: %globals_asset_metadata_Level^empty:0%%begin_globals_user_assetid^eq:1595%,
+        zLevel: %globals_asset_metadata_Level^empty:0%,
         interactive: true,
         zLevelUpdater: true,
-        zLevelControl: false%end_globals%
+        zLevelControl: false
     });
 
 myMap.on('load', function(){
@@ -27,27 +27,22 @@ myMap.on('load', function(){
         },
         trackUserLocation: true
     });
-
     myMap.addControl(geolocateController);
 
-%begin_globals_user_assetid^eq:1595%    /* floor bar */
+    /* floor bar */
     floorBar = new Mazemap.ZLevelBarControl( {
         autoUpdate: true,
         maxHeight: 350
     } );
     myMap.addControl( floorBar, 'bottom-left' );
-
     function onResize(){
         var height = myMap.getCanvas().clientHeight;
         var maxHeight = height - 100; // 100 pixels to clear search field
         floorBar.setMaxHeight(maxHeight);
     };
-
     myMap.on('resize', onResize);
-
     onResize();
-%end_globals%
-        
+
     /* full screen toggle */
     myMap.addControl(new Mazemap.mapboxgl.FullscreenControl());
 
