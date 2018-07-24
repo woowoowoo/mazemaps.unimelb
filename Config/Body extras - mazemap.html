@@ -3,12 +3,13 @@
     var token = 'pk.eyJ1IjoibWFwcy11bmltZWxiIiwiYSI6ImNqaGZvZ3NkZjFkcjEzY24ycDRoMjhlOTIifQ.aWhq82khhgathoavkKUTlg';
     var mapStyle = 'cjghf66go00262rqdu3htp33o';
     var startZoom = %begin_globals_asset_metadata_ObjectType^contains:Campus%%globals_asset_metadata_Zoom^empty:15%%else_begin_globals_asset_metadata_ObjectType^contains:Group%%globals_asset_metadata_Zoom^empty:16%%else_begin_globals_asset_metadata_ObjectType^contains:Building%%globals_asset_metadata_Zoom^empty:17%%else_globals%%globals_asset_metadata_Zoom^empty:18%%end_globals%;
+    var startCampus = %globals_asset_metadata_CampusID^empty:200%;
 
     var myMap = new Mazemap.Map({
         zoom: startZoom,
         container: 'map',
 //        style: 'https://api.mapbox.com/styles/v1/maps-unimelb/'+ mapStyle + '?access_token=' + token,
-        campuses: %globals_asset_metadata_CampusID^empty:200%,
+        campuses: startCampus,
         center: {lng: %globals_asset_metadata_Longitude^empty:{asset_parent^as_asset:asset_metadata_Longitude}%, lat: %globals_asset_metadata_Latitude^empty:{asset_parent^as_asset:asset_metadata_Latitude}%},
         zLevel: %globals_asset_metadata_Level^empty:0%,
         interactive: true,
