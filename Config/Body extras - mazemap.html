@@ -33,13 +33,13 @@ myMap.on('load', function(){
 %begin_globals_user_assetid^eq:1595%    /* floor bar */
     floorBar = new Mazemap.ZLevelBarControl( {
         autoUpdate: true,
-        maxHeight: 400 // Can also set initial maxHeight if no need for auto resize
+        maxHeight: 350
     } );
     myMap.addControl( floorBar, 'bottom-left' );
 
     function onResize(){
         var height = myMap.getCanvas().clientHeight;
-        var maxHeight = height - 50; // 50 pixels account for margins and spacing
+        var maxHeight = height - 100; // 100 pixels to clear search field
         floorBar.setMaxHeight(maxHeight);
     };
 
