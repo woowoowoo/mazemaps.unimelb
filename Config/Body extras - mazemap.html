@@ -1,158 +1,152 @@
 <script>
 /* begin with stuff for all pages */
-var token = 'pk.eyJ1IjoibWFwcy11bmltZWxiIiwiYSI6ImNqaGZvZ3NkZjFkcjEzY24ycDRoMjhlOTIifQ.aWhq82khhgathoavkKUTlg';
-var mapStyle = 'cjghf66go00262rqdu3htp33o';
-var startZoom = %begin_globals_asset_metadata_ObjectType^contains:Campus%%globals_asset_metadata_Zoom^empty:15%%else_begin_globals_asset_metadata_ObjectType^contains:Group%%globals_asset_metadata_Zoom^empty:16%%else_begin_globals_asset_metadata_ObjectType^contains:Building%%globals_asset_metadata_Zoom^empty:17%%else_globals%%globals_asset_metadata_Zoom^empty:18%%end_globals%;
+    var token = 'pk.eyJ1IjoibWFwcy11bmltZWxiIiwiYSI6ImNqaGZvZ3NkZjFkcjEzY24ycDRoMjhlOTIifQ.aWhq82khhgathoavkKUTlg';
+    var mapStyle = 'cjghf66go00262rqdu3htp33o';
+    var startZoom = %begin_globals_asset_metadata_ObjectType^contains:Campus%%globals_asset_metadata_Zoom^empty:15%%else_begin_globals_asset_metadata_ObjectType^contains:Group%%globals_asset_metadata_Zoom^empty:16%%else_begin_globals_asset_metadata_ObjectType^contains:Building%%globals_asset_metadata_Zoom^empty:17%%else_globals%%globals_asset_metadata_Zoom^empty:18%%end_globals%;
 
-var myMap = new Mazemap.Map({
-zoom: startZoom,
-container: 'map',
-style: 'https://api.mapbox.com/styles/v1/maps-unimelb/'+ mapStyle + '?access_token=' + token,
-campuses: %globals_asset_metadata_CampusID^empty:200%,
-center: {lng: %globals_asset_metadata_Longitude^empty:{asset_parent^as_asset:asset_metadata_Longitude}%, lat: %globals_asset_metadata_Latitude^empty:{asset_parent^as_asset:asset_metadata_Latitude}%},
-zLevel: %globals_asset_metadata_Level^empty:0%
-});
+    var myMap = new Mazemap.Map({
+        zoom: startZoom,
+        container: 'map',
+//        style: 'https://api.mapbox.com/styles/v1/maps-unimelb/'+ mapStyle + '?access_token=' + token,
+        campuses: %globals_asset_metadata_CampusID^empty:200%,
+        center: {lng: %globals_asset_metadata_Longitude^empty:{asset_parent^as_asset:asset_metadata_Longitude}%, lat: %globals_asset_metadata_Latitude^empty:{asset_parent^as_asset:asset_metadata_Latitude}%},
+        zLevel: %globals_asset_metadata_Level^empty:0%%begin_globals_user_assetid^eq:1595%,
+        interactive: true,
+        zLevelUpdater: true,
+        zLevelControl: false%end_globals%
+    });
 
 
-/* basic map nav tools */
-myMap.addControl(new Mazemap.mapboxgl.NavigationControl());
+    /* basic map nav tools */
+    myMap.addControl(new Mazemap.mapboxgl.NavigationControl());
 
-/* geolocation control */
-myMap.addControl(new Mazemap.mapboxgl.GeolocateControl({
-positionOptions: {
-enableHighAccuracy: true
-},
-trackUserLocation: true
-}));
+    /* geolocation control */
+    var geolocateController = new Mazemap.mapboxgl.GeolocateControl({
+        positionOptions: {
+            enableHighAccuracy: true
+        },
+        trackUserLocation: true
+    });
 
-/* full screen toggle */
-myMap.addControl(new Mazemap.mapboxgl.FullscreenControl());
+    myMap.addControl(geolocateController);
 
-/* search tool */
-var mySearch = new Mazemap.Search.SearchController({
-campusid: %globals_asset_metadata_CampusID^empty:200%,
+%begin_globals_user_assetid^eq:1595%    /* floor bar */
+    floorBar = new Mazemap.ZLevelBarControl( {
+        autoUpdate: true,
+        maxHeight: 400 // Can also set initial maxHeight if no need for auto resize
+    } );
+    myMap.addControl( floorBar, 'bottom-left' );
 
-rows: 10,
+    function onResize(){
+        var height = myMap.getCanvas().clientHeight;
+        var maxHeight = height - 50; // 50 pixels account for margins and spacing
+        floorBar.setMaxHeight(maxHeight);
+    };
 
-withpois: true,
-withbuilding: true,
-withtype: false,
-withcampus: false,
+    myMap.on('resize', onResize);
 
-resultsFormat: 'geojson'
-});
+    onResize();
+%end_globals%
+        
+    /* full screen toggle */
+    myMap.addControl(new Mazemap.mapboxgl.FullscreenControl());
 
-var mySearchInput = new Mazemap.Search.SearchInput({
-container: document.getElementById('search-input-container'),
-input: document.getElementById('searchInput'),
-suggestions: document.getElementById('suggestions'),
-searchController: mySearch
-}).on('itemclick', function(e){
+    /* search tool */
+    var mySearch = new Mazemap.Search.SearchController({
+        campusid: %globals_asset_metadata_CampusID^empty:200%,
+        rows: 10,
+        withpois: true,
+        withbuilding: true,
+        withtype: false,
+        withcampus: false,
+        resultsFormat: 'geojson'
+    });
 
-var poiFeature = e.item;
-placePoiMarker( poiFeature );
-});
+    var mySearchInput = new Mazemap.Search.SearchInput({
+        container: document.getElementById('search-input-container'),
+        input: document.getElementById('searchInput'),
+        suggestions: document.getElementById('suggestions'),
+        searchController: mySearch
+    }).on('itemclick', function(e){
+        var poiFeature = e.item;
+        placePoiMarker( poiFeature );
+    });
 
-var resultMarker = new Mazemap.MazeMarker({
-color: 'rgb(253, 117, 38)',
-innerCircle: true,
-innerCircleColor: '#FFF',
-size: 34,
-innerCircleScale: 0.5,
-zLevel: 1
-})
+    var resultMarker = new Mazemap.MazeMarker({
+        color: 'rgb(253, 117, 38)',
+        innerCircle: true,
+        innerCircleColor: '#FFF',
+        size: 34,
+        innerCircleScale: 0.5,
+        zLevel: 1
+    })
+    
+    myMap.getCanvas().addEventListener('focus', function(){
+        mySearchInput.hideSuggestions();
+    });
 
-function placePoiMarker(poi){
-// Get a center point for the POI, because the data can return a polygon instead of just a point sometimes
-var lngLat = Mazemap.Util.getPoiLngLat(poi);
-var zLevel = poi.properties.zValue;
 
-resultMarker
-.setLngLat(lngLat)
-.setZLevel(poi.properties.zValue)
-.addTo(myMap);
-
-myMap.zLevel = zLevel;
-
-myMap.flyTo({center: lngLat, zoom: 19, duration: 2000});
-}
-
-myMap.getCanvas().addEventListener('focus', function(){
-mySearchInput.hideSuggestions();
-});
-
-/* flexible height floor bar */
-/*
-floorBar = new Mazemap.ZLevelBarControl( {
-autoUpdate: true,
-maxHeight: 300
-} );
-myMap.addControl( floorBar, 'bottom-left' );
-
-function onResize(){
-var height = myMap.getCanvas().clientHeight;
-var maxHeight = height - 50; // 50 pixels account for margins and spacing
-floorBar.setMaxHeight(maxHeight);
-};
-
-myMap.on('resize', onResize);
-
-onResize();
-*/
-
+    function placePoiMarker(poi){
+        // Get a center point for the POI, because the data can return a polygon instead of just a point sometimes
+        var lngLat = Mazemap.Util.getPoiLngLat(poi);
+        var zLevel = poi.properties.zValue;
+        resultMarker.setLngLat(lngLat)
+                    .setZLevel(poi.properties.zValue)
+                    .addTo(myMap);
+        myMap.zLevel = zLevel;
+        myMap.flyTo({center: lngLat, zoom: 19, duration: 2000});
+    }
 
 %begin_globals_asset_metadata_ObjectType^contains:Campus%
 
 
 %else_begin_globals_asset_metadata_ObjectType^contains:Group%
 
-myMap.on('load', function(){
-// MazeMap ready
+    myMap.on('load', function(){
+    // MazeMap ready
 
-// Add a source layer to use with the layer for rendering geojson features
-myMap.addSource("markers", {
-"type": "geojson",
-"data": {
-"type": "FeatureCollection",
-"features": geojson
-}
-});
+        // Add a source layer to use with the layer for rendering geojson features
+        myMap.addSource("markers", {
+            "type": "geojson",
+            "data": {
+            "type": "FeatureCollection",
+            "features": geojson
+            }
+        });
 
-myMap.addLayer({
-"id": "markers",
-"type": "circle",
-"source": "markers",
-"paint": {
-"circle-color": "#ff334f",
-"circle-radius": 7,
-"circle-stroke-width": 2,
-"circle-stroke-color": "#fff"
-}
-});
+        myMap.addLayer({
+            "id": "markers",
+            "type": "circle",
+            "source": "markers",
+            "paint": {
+                "circle-color": "#ff334f",
+                "circle-radius": 7,
+                "circle-stroke-width": 2,
+                "circle-stroke-color": "#fff"
+            }
+        });
 
-var popup = new Mazemap.Popup({
-closeButton: false,
-closeOnClick: false
-});
+        var popup = new Mazemap.Popup({
+            closeButton: false,
+            closeOnClick: false
+        });
 
-myMap.on('mouseenter', 'markers', function(e){
+        myMap.on('mouseenter', 'markers', function(e){
+            popup.remove(); 
+            var lngLat = e.lngLat;
+            var zLevel = myMap.zLevel;
 
-popup.remove(); 
+            var features = myMap.queryRenderedFeatures(e.point, {layers: ['markers']});
+            if(features && features.length > 0)
+            {
+            // We clicked on an existing marker feature
+            // Show a popup here
+                popup.setLngLat(features[0].geometry.coordinates)
+                    .setHTML(features[0].properties.description)
+                    .addTo(myMap);
+            }
 
-var lngLat = e.lngLat;
-var zLevel = myMap.zLevel;
-
-var features = myMap.queryRenderedFeatures(e.point, {layers: ['markers']});
-if(features && features.length > 0)
-{
-// We clicked on an existing marker feature
-// Show a popup here
-popup.setLngLat(features[0].geometry.coordinates)
-.setHTML(features[0].properties.description)
-.addTo(myMap);
-}
-
-});
+    });
 
 /*myMap.on('mousemove', function(e) {
 var features = myMap.queryRenderedFeatures(e.point, { layers: ['markers'] });
@@ -183,152 +177,98 @@ popup.remove();
 
 %else_begin_globals_asset_metadata_ObjectType^contains:Building%
 
-myMap.on('load', function(){
-// MazeMap ready
-%begin_globals_asset_metadata_BuildingID^trim%
-Mazemap.Data.getBuilding(%globals_asset_metadata_BuildingID%).then( building => {
-var lngLat = Mazemap.Util.getPoiLngLat(building);
-building.properties.zLevel = 0;
-var marker = new Mazemap.MazeMarker( {
-color: "MazeBlue",
-size: 36,
-zLevel: building.properties.zLevel
-} ).setLngLat( lngLat ).addTo(myMap);
-marker.zLevelToggle();
+    myMap.on('load', function(){
+    // MazeMap ready
+    %begin_globals_asset_metadata_BuildingID^trim%
+        Mazemap.Data.getBuilding(%globals_asset_metadata_BuildingID%).then( building => {
+            var lngLat = Mazemap.Util.getPoiLngLat(building);
+            building.properties.zLevel = 0;
+            var marker = new Mazemap.MazeMarker({
+                color: "MazeBlue",
+                size: 36,
+                zLevel: building.properties.zLevel
+            }).setLngLat(lngLat).addTo(myMap);
+            marker.zLevelToggle();
 
-myMap.highlighter = new Mazemap.Highlighter( myMap, {
-showOutline: true, // optional
-showFill: true, // optional,
-outlineColor: Mazemap.Util.Colors.MazeColors.MazeBlue, // optional
-fillColor: Mazemap.Util.Colors.MazeColors.MazeBlue // optional
-});
-if(building.geometry.type === "Polygon"){
-myMap.highlighter.highlight(building);
-}
+            myMap.highlighter = new Mazemap.Highlighter( myMap, {
+                showOutline: true, // optional
+                showFill: true, // optional,
+                outlineColor: Mazemap.Util.Colors.MazeColors.MazeBlue, // optional
+                fillColor: Mazemap.Util.Colors.MazeColors.MazeBlue // optional
+            });
+            if(building.geometry.type === "Polygon"){
+                myMap.highlighter.highlight(building);
+            }
+            myMap.setCenter(lngLat);
+        });
+    %else_globals_asset_metadata_BuildingID%
+        var lngLat = myMap.getCenter();
+        var marker = new Mazemap.MazeMarker( {
+            color: "MazeBlue",
+            size: 36,
+            zLevel: 1
+        }).setLngLat( lngLat ).addTo(myMap);
+    %end_globals_asset_metadata_BuildingID%
 
-myMap.setCenter(lngLat);
-});
-%else_globals_asset_metadata_BuildingID%
-var lngLat = myMap.getCenter();
-
-var marker = new Mazemap.MazeMarker( {
-color: "MazeBlue",
-size: 36,
-zLevel: 1
-} ).setLngLat( lngLat ).addTo(myMap);
-%end_globals_asset_metadata_BuildingID%
-
-});
+    });
 
 %else_begin_globals_asset_metadata_ObjectType^contains:POI%
 
-myMap.on('load', function(){
-// MazeMap ready
-%begin_globals_asset_metadata_POI^trim%
-Mazemap.Data.getPoi(%globals_asset_metadata_POI%).then( poi => {
-var lngLat = Mazemap.Util.getPoiLngLat(poi);
+    myMap.on('load', function(){
+    // MazeMap ready
+    %begin_globals_asset_metadata_POI^trim%
+        Mazemap.Data.getPoi(%globals_asset_metadata_POI%).then( poi => {
+            var lngLat = Mazemap.Util.getPoiLngLat(poi);
+            var marker = new Mazemap.MazeMarker( {
+                color: "MazeBlue",
+                size: 36,
+                zLevel: poi.properties.zLevel
+            } ).setLngLat( lngLat ).addTo(myMap);
+            marker.zLevelToggle();
+            myMap.highlighter = new Mazemap.Highlighter( myMap, {
+                showOutline: true, // optional
+                showFill: true, // optional,
+                outlineColor: Mazemap.Util.Colors.MazeColors.MazeBlue, // optional
+                fillColor: Mazemap.Util.Colors.MazeColors.MazeBlue // optional
+            });
+            
+            if(poi.geometry.type === "Polygon"){
+                myMap.highlighter.highlight(poi);
+            }
 
-var marker = new Mazemap.MazeMarker( {
-color: "MazeBlue",
-size: 36,
-zLevel: poi.properties.zLevel
-} ).setLngLat( lngLat ).addTo(myMap);
-marker.zLevelToggle();
-myMap.highlighter = new Mazemap.Highlighter( myMap, {
-showOutline: true, // optional
-showFill: true, // optional,
-outlineColor: Mazemap.Util.Colors.MazeColors.MazeBlue, // optional
-fillColor: Mazemap.Util.Colors.MazeColors.MazeBlue // optional
+            myMap.setCenter(lngLat);
+        });
+
+    %else_globals_asset_metadata_POI%
+        var lngLat = myMap.getCenter();
+        var marker = new Mazemap.MazeMarker({
+            color: "MazeBlue",
+            size: 36,
+            zLevel: 1
+        }).setLngLat( lngLat ).addTo(myMap);
+    %end_globals_asset_metadata_POI%
 });
-if(poi.geometry.type === "Polygon"){
-myMap.highlighter.highlight(poi);
-}
-
-myMap.setCenter(lngLat);
-
-});
-
-%else_globals_asset_metadata_POI%
-var lngLat = myMap.getCenter();
-
-var marker = new Mazemap.MazeMarker( {
-color: "MazeBlue",
-size: 36,
-zLevel: 1
-} ).setLngLat( lngLat ).addTo(myMap);
-%end_globals_asset_metadata_POI%
-
-});
-
-%else_begin_globals_asset_assetid^eq:43989%
-/* the stand alone directions page */
-
-var routeController;
-
-%begin_globals_get_pointA%
-/* poiID: %globals_get_pointA% was supplied */
-var pointA = { poiId: %globals_get_pointA%};
-%else_begin_globals_get_assetA%
-%begin_globals_get_assetA^as_asset:asset_metadata_POI%
-/* assetid: %globals_get_assetA% was supplied and it has a poiID */
-var pointA = { poiId: %globals_get_assetA^as_asset:asset_metadata_POI%};
-%else_globals%
-/* assetid: %globals_get_assetA% was supplied and we fell back to lngLat */
-var pointA = { lngLat: {lng: %globals_get_assetA^as_asset:asset_metadata_Longitude%, lat: %globals_get_assetA^as_asset:asset_metadata_Latitude%}, zLevel: %globals_get_assetA^as_asset:asset_metadata_Level^empty:0%};
-%end_globals%
-%else_begin_globals_get_lngA%
-/* a longitude was supplied (and hopefully a latitude!) */
-var pointA = { lngLat: {lng: %globals_get_lngA%, lat: %globals_get_latA%}, zLevel: %globals_get_zA^empty:0%};
-%else_globals%
-/* no start point was provided */
-var pointA;
-%end_globals%
-
-%begin_globals_get_pointB%
-/* poiID: %globals_get_pointB% was supplied */
-var pointB = { poiId: %globals_get_pointB%};
-%else_begin_globals_get_assetB%
-%begin_globals_get_assetB^as_asset:asset_metadata_POI%
-/* assetid: %globals_get_assetB% was supplied and it has a poiID */
-var pointB = { poiId: %globals_get_assetB^as_asset:asset_metadata_POI%};
-%else_globals%
-/* assetid: %globals_get_assetB% was supplied and we fell back to lngLat */
-var pointB = { lngLat: {lng: %globals_get_assetB^as_asset:asset_metadata_Longitude%, lat: %globals_get_assetB^as_asset:asset_metadata_Latitude%}, zLevel: %globals_get_assetB^as_asset:asset_metadata_Level^empty:0%};
-%end_globals%
-%else_begin_globals_get_lngB%
-/* a longitude was supplied (and hopefully a latitude!) */
-var pointB = { lngLat: {lng: %globals_get_lngB%, lat: %globals_get_latB%}, zLevel: %globals_get_zB^empty:0%};
-%else_globals%
-/* no end point was provided */
-var pointB;
-%end_globals%
-
-myMap.on('load', function(){
-
-routeController = new Mazemap.RouteController(myMap, {
-routeLineColorPrimary: '#0099EA',
-routeLineColorSecondary: '#888888'
-});
-setRoute(pointA, pointB);
-});
-
-function setRoute( start, dest ){
-routeController.clear(); // Clear existing route, if any
-
-Mazemap.Data.getRouteJSON(start, dest)
-.then(function(geojson){
-console.log('@ geojson', geojson);
-routeController.setPath(geojson);
-var bounds = Mazemap.Util.Turf.bbox(geojson);
-myMap.fitBounds( bounds, {padding: 100} );
-});
-}
 
 
 %else_globals%
 /* standard pages */
 
 %end_globals%
+
+window.onload = function() {
+  if (document.getElementById("getDirectionLnk"))
+        geolocateController.on('geolocate', function(data) {
+            if (data.hasOwnProperty('coords')) {
+                var href = new URL(document.getElementById("getDirectionLnk").href);
+                if (href) {
+                    href.searchParams.set('lngA', data.coords.longitude);
+                    href.searchParams.set('latA', data.coords.latitude);
+                    href.searchParams.set('zA', 0);
+                    document.getElementById("getDirectionLnk").href= href.toString();
+                }
+            }
+        });
+}
 </script>
 
 <script type="application/ld+json">
