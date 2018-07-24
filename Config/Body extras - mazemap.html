@@ -16,7 +16,7 @@
         zLevelControl: false%end_globals%
     });
 
-
+myMap.on('load', function(){
     /* basic map nav tools */
     myMap.addControl(new Mazemap.mapboxgl.NavigationControl());
 
@@ -102,7 +102,7 @@
 
 %else_begin_globals_asset_metadata_ObjectType^contains:Group%
 
-    myMap.on('load', function(){
+//    myMap.on('load', function(){
     // MazeMap ready
 
         // Add a source layer to use with the layer for rendering geojson features
@@ -146,7 +146,7 @@
                     .addTo(myMap);
             }
 
-    });
+//    });
 
 /*myMap.on('mousemove', function(e) {
 var features = myMap.queryRenderedFeatures(e.point, { layers: ['markers'] });
@@ -177,7 +177,7 @@ popup.remove();
 
 %else_begin_globals_asset_metadata_ObjectType^contains:Building%
 
-    myMap.on('load', function(){
+//    myMap.on('load', function(){
     // MazeMap ready
     %begin_globals_asset_metadata_BuildingID^trim%
         Mazemap.Data.getBuilding(%globals_asset_metadata_BuildingID%).then( building => {
@@ -210,11 +210,11 @@ popup.remove();
         }).setLngLat( lngLat ).addTo(myMap);
     %end_globals_asset_metadata_BuildingID%
 
-    });
+//  });
 
 %else_begin_globals_asset_metadata_ObjectType^contains:POI%
 
-    myMap.on('load', function(){
+//    myMap.on('load', function(){
     // MazeMap ready
     %begin_globals_asset_metadata_POI^trim%
         Mazemap.Data.getPoi(%globals_asset_metadata_POI%).then( poi => {
@@ -247,13 +247,14 @@ popup.remove();
             zLevel: 1
         }).setLngLat( lngLat ).addTo(myMap);
     %end_globals_asset_metadata_POI%
-});
+// });
 
 
 %else_globals%
 /* standard pages */
 
 %end_globals%
+}); /* end of myMap.on('load'…) */
 
 window.onload = function() {
   if (document.getElementById("getDirectionLnk"))
