@@ -47,40 +47,6 @@ myMap.on('load', function(){
     /* full screen toggle */
     myMap.addControl(new Mazemap.mapboxgl.FullscreenControl());
 
-    /* search tool */
-    var mySearch = new Mazemap.Search.SearchController({
-        campusid: %globals_asset_metadata_CampusID^empty:200%,
-        rows: 10,
-        withpois: true,
-        withbuilding: true,
-        withtype: false,
-        withcampus: false,
-        resultsFormat: 'geojson'
-    });
-
-    var mySearchInput = new Mazemap.Search.SearchInput({
-        container: document.getElementById('search-input-container'),
-        input: document.getElementById('searchInput'),
-        suggestions: document.getElementById('suggestions'),
-        searchController: mySearch
-    }).on('itemclick', function(e){
-        var poiFeature = e.item;
-        placePoiMarker( poiFeature );
-    });
-
-    var resultMarker = new Mazemap.MazeMarker({
-        color: 'rgb(253, 117, 38)',
-        innerCircle: true,
-        innerCircleColor: '#FFF',
-        size: 34,
-        innerCircleScale: 0.5,
-        zLevel: 1
-    })
-    
-    myMap.getCanvas().addEventListener('focus', function(){
-        mySearchInput.hideSuggestions();
-    });
-
 %begin_globals_asset_metadata_ObjectType^contains:Campus%
 
 
@@ -223,6 +189,40 @@ popup.remove();
 
 %end_globals%
 }); /* end of myMap.on('load'…) */
+
+/* search tool */
+var mySearch = new Mazemap.Search.SearchController({
+    campusid: %globals_asset_metadata_CampusID^empty:200%,
+    rows: 10,
+    withpois: true,
+    withbuilding: true,
+    withtype: false,
+    withcampus: false,
+    resultsFormat: 'geojson'
+});
+
+var mySearchInput = new Mazemap.Search.SearchInput({
+    container: document.getElementById('search-input-container'),
+    input: document.getElementById('searchInput'),
+    suggestions: document.getElementById('suggestions'),
+    searchController: mySearch
+}).on('itemclick', function(e){
+    var poiFeature = e.item;
+    placePoiMarker( poiFeature );
+});
+
+var resultMarker = new Mazemap.MazeMarker({
+    color: 'rgb(253, 117, 38)',
+    innerCircle: true,
+    innerCircleColor: '#FFF',
+    size: 34,
+    innerCircleScale: 0.5,
+    zLevel: 1
+})
+
+myMap.getCanvas().addEventListener('focus', function(){
+    mySearchInput.hideSuggestions();
+});
 
 function placePoiMarker(poi){
 	// Get a center point for the POI, because the data can return a polygon instead of just a point sometimes
