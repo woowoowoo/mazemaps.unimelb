@@ -81,18 +81,6 @@ myMap.on('load', function(){
         mySearchInput.hideSuggestions();
     });
 
-
-    function placePoiMarker(poi){
-        // Get a center point for the POI, because the data can return a polygon instead of just a point sometimes
-        var lngLat = Mazemap.Util.getPoiLngLat(poi);
-        var zLevel = poi.properties.zValue;
-        resultMarker.setLngLat(lngLat)
-                    .setZLevel(poi.properties.zValue)
-                    .addTo(myMap);
-        myMap.zLevel = zLevel;
-        myMap.flyTo({center: lngLat, zoom: 19, duration: 2000});
-    }
-
 %begin_globals_asset_metadata_ObjectType^contains:Campus%
 
 
@@ -235,6 +223,17 @@ popup.remove();
 
 %end_globals%
 }); /* end of myMap.on('load'…) */
+
+function placePoiMarker(poi){
+	// Get a center point for the POI, because the data can return a polygon instead of just a point sometimes
+	var lngLat = Mazemap.Util.getPoiLngLat(poi);
+	var zLevel = poi.properties.zValue;
+	resultMarker.setLngLat(lngLat)
+				.setZLevel(poi.properties.zValue)
+				.addTo(myMap);
+	myMap.zLevel = zLevel;
+	myMap.flyTo({center: lngLat, zoom: 19, duration: 2000});
+}
 
 window.onload = function() {
   if (document.getElementById("getDirectionLnk"))
