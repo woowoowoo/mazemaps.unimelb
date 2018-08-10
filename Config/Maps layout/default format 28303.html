@@ -1,3 +1,17 @@
+%begin_globals_get_SQ_DESIGN_NAME%
+<!-- design is being switched -->
+	%begin_globals_get_SQ_DESIGN_NAME^eq:embed%
+    <h1>%asset_metadata_Name%</h1>
+    <div class="map-container">
+    <div id="map" class="mazemap"></div>
+    </div>
+    <ul id="map-extras">
+        <li><a href="%globals_asset_url%" target="_top">Open map page</a></li>
+    </ul>
+	%else_begin_globals_get_SQ_DESIGN_NAME^eq:plain%
+		%globals_asset_contents_raw:50988^with_get:url={globals_asset_url}%
+	%end_globals%
+%else_globals%
 %begin_asset_metadata_ObjectType^contains:Campus%
 <!-- begin Campus layout -->
     <div class="content-block content-block--short"><h1><span class="link-icon link-icon--custom"><svg focusable="false" role="presentation"><use xlink:href="#icon-campaign"></use></svg></span> %asset_short_name%</h1></div>
@@ -160,3 +174,4 @@
     <!-- No map paint layout #28304 -->
     <div class="content-block content-block--short">%asset_contents%</div>
 %end_asset%
+%end_globals%
