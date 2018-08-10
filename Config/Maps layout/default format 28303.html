@@ -1,0 +1,162 @@
+%begin_asset_metadata_ObjectType^contains:Campus%
+<!-- begin Campus layout -->
+    <div class="content-block content-block--short"><h1><span class="link-icon link-icon--custom"><svg focusable="false" role="presentation"><use xlink:href="#icon-campaign"></use></svg></span> %asset_short_name%</h1></div>
+    <div class="map-container">
+        <div id="map" class="mazemap"></div>
+        <div id="search-input-container" class="search-control-default">
+        <input tabindex="0" id="searchInput" class="search-input" autocomplete="off" type="text" name="search" placeholder="Search">
+        <div id="suggestions" class="search-suggestions default"></div>
+    </div>
+    </div>
+    <div class="content-block">%asset_contents%</div>
+<!-- end Campus layout -->
+%else_begin_asset_metadata_ObjectType^eq:Group%
+<!-- begin Group layout -->
+    <div class="content-block content-block--short"><h1><span class="link-icon link-icon--custom"><svg focusable="false" role="presentation"><use xlink:href="#icon-location"></use></svg></span> %globals_asset_name%</h1></div>
+    <div class="map-container">
+        <div id="map" class="mazemap"></div>
+        <div id="search-input-container" class="search-control-default">
+        <input tabindex="0" id="searchInput" class="search-input" autocomplete="off" type="text" name="search" placeholder="Search">
+        <div id="suggestions" class="search-suggestions default"></div>
+    </div>
+    </div>
+    <div class="content-block">%asset_contents%</div>
+<!-- end Group layout -->
+%else_begin_asset_metadata_ObjectType^contains:POI%
+<!-- begin POI layout -->
+    <div class="content-block content-block--short"><h1><span class="link-icon link-icon--custom"><svg focusable="false" role="presentation">
+    <use xlink:href="#icon-location"></use>
+  </svg></span> %asset_metadata_Name%</h1></div>
+    <div class="content-block content-block--short">
+            <div class="grid">
+                <div class="cell cell--desk-1of3">
+                    <h2 class="heading-card">Location details</h2>
+                    <ul>
+                    <li>Within: <a href="%asset_parent^as_asset:asset_url%">%asset_parent^as_asset:asset_metadata_Name%</a></li>
+                    %asset_metadata_AlternateName^prepend_if:Also known as\: ^tagif:li%
+                    %asset_metadata_StreetAddress^empty:{asset_parent^as_asset:asset_metadata_StreetAddress}^prepend_if:Street address\: ^tagif:li%
+                    %asset_metadata_Directions^prepend_if:Extra directions\: ^tagif:li%
+%begin_asset_metadata_InfoURL%
+	        		<li><a href="%asset_metadata_InfoURL%">More information</a></li>
+%end_asset%
+	        		<li><a id="getDirectionLnk" href="%globals_asset_url:43989%?assetB=%asset_assetid%">Get directions</a></li>
+                    </ul>
+                <h3 class="heading-card">Share this location</h3>
+                %globals_asset_contents_raw:40555%<!--@@ Share list @@-->
+                </div>
+                <div class="cell cell--desk-2of3 map-container">
+                    <div id="map" class="mazemap"></div>
+                    <div id="search-input-container" class="search-control-default">
+                        <input tabindex="0" id="searchInput" class="search-input" autocomplete="off" type="text" name="search" placeholder="Search">
+                        <div id="suggestions" class="search-suggestions default"></div>
+                    </div>
+                </div>
+            </div>
+    </div>
+<!-- end POI layout -->
+%else_begin_asset_metadata_ObjectType^eq:Building%
+<!-- begin Building layout -->
+%begin_asset_metadata_Name^charcount^lt:5%
+    <div class="content-block content-block--short"><h1><span class="link-icon link-icon--custom"><svg focusable="false" role="presentation"><use xlink:href="#icon-faculty"></use></svg></span> Building %asset_short_name%</h1></div>
+%else_asset%
+    <div class="content-block content-block--short"><h1><span class="link-icon link-icon--custom"><svg focusable="false" role="presentation"><use xlink:href="#icon-faculty"></use></svg></span> %asset_metadata_Name^append_if: \:% Building %asset_short_name%</h1></div>
+%end_asset%
+    <div class="content-block content-block--short">
+        <div class="grid">
+            <div class="cell cell--desk-1of3">
+                <h2 class="heading-card">Building details</h2>
+                <ul>
+                    <li>Within: <a href="%asset_parent^as_asset:asset_url%">%asset_parent^as_asset:asset_metadata_Name%</a></li>
+                    <li>Building number: %asset_short_name%</li>
+                    %asset_metadata_AlternateName^prepend_if:Also known as\: ^tagif:li%
+                    %asset_metadata_StreetAddress^prepend_if:Street address\: ^tagif:li%
+                    %asset_metadata_Directions^prepend_if:Extra directions\: ^tagif:li%
+%begin_asset_metadata_InfoURL%
+	        		<li><a href="%asset_metadata_InfoURL%">More information</a></li>
+%end_asset%
+	        		<li><a id="getDirectionLnk" href="%globals_asset_url:43989%?assetB=%asset_assetid%">Get directions</a></li>
+                </ul>
+                <h3 class="heading-card">Share this location</h3>
+                %globals_asset_contents_raw:40555%<!--@@ Share list @@-->
+                %globals_asset_contents_raw:34298%<!--@@ Inside this building @@-->
+<!-- for testing, visible only to Andrew Harris -->%begin_globals_user_assetid^eq:1595%<p><a href="%globals_asset_url%?listPOI=%globals_asset_metadata_BuildingID%#poilist">Also in this building</a></p>%end_globals%
+            </div>
+            <div class="cell cell--desk-2of3 map_cell">
+%begin_asset_metadata_VirtualURL%
+<tabs>
+  <tab title="Map">
+    <div class=" map-container">
+        <div id="map" class="mazemap"></div>
+        <div id="search-input-container" class="search-control-default">
+            <input tabindex="0" id="searchInput" class="search-input" autocomplete="off" type="text" name="search" placeholder="Search">
+            <div id="suggestions" class="search-suggestions default"></div>
+        </div>
+    </div>
+  </tab>
+  <tab title="Street view">
+      %asset_metadata_VirtualURL^replace:(width="\d\{3\}"):width="100&#37;"^replace:(height="\d\{3\}"):height="500"%
+  </tab>
+    %begin_asset_metadata_Photo%
+      <tab title="Photo">
+          <figure class="figure">
+            <img src="%asset_metadata_Photo^as_asset:asset_url%" alt="Photograph of %asset_metadata_Name^append_if: \:% Building %asset_short_name%" />
+            %begin_asset_metadata_Photo^as_asset:asset_attribute_caption%<figcaption>%asset_metadata_Photo^as_asset:asset_attribute_caption%</figcaption>%end_asset%
+          </figure>
+      </tab>
+    %end_asset%
+</tabs>
+%else_begin_asset_metadata_Photo%
+<tabs>
+  <tab title="Map">
+    <div class=" map-container">
+        <div id="map" class="mazemap"></div>
+        <div id="search-input-container" class="search-control-default">
+            <input tabindex="0" id="searchInput" class="search-input" autocomplete="off" type="text" name="search" placeholder="Search">
+            <div id="suggestions" class="search-suggestions default"></div>
+        </div>
+    </div>
+  </tab>
+  <tab title="Photo">
+      <figure class="figure">
+        <img src="%asset_metadata_Photo^as_asset:asset_url%" alt="Photograph of %asset_metadata_Name%" />
+        %begin_asset_metadata_Photo^as_asset:asset_attribute_caption%<figcaption>%asset_metadata_Photo^as_asset:asset_attribute_caption%</figcaption>%end_asset%
+      </figure>
+  </tab>
+</tabs>
+%else_asset%
+    <div class=" map-container">
+        <div id="map" class="mazemap"></div>
+        <div id="search-input-container" class="search-control-default">
+            <input tabindex="0" id="searchInput" class="search-input" autocomplete="off" type="text" name="search" placeholder="Search">
+            <div id="suggestions" class="search-suggestions default"></div>
+        </div>
+    </div>
+%end_asset%
+
+                </div>
+            </div>
+    </div>
+    <!-- complete -->%begin_globals_get_listPOI%
+    <div class="content-block content-block--short">
+        <!-- list of POIs inside %asset_metadata_BuildingID% -->
+          %globals_asset_contents_raw:47145%
+    </div>
+                %else_globals%
+                <!-- nada -->
+                %end_globals%
+<!-- end Building layout -->
+%else_begin_asset_assetid^eq:43989%
+<!-- begin directions page layout -->
+    <div class="content-block content-block--short">%asset_contents%</div>
+    <div class=" map-container">
+        <div id="map" class="mazemap"></div>
+        <div id="search-input-container" class="search-control-default">
+            <input tabindex="0" id="searchInput" class="search-input" autocomplete="off" type="text" name="search" placeholder="Search">
+            <div id="suggestions" class="search-suggestions default"></div>
+        </div>
+    </div>
+<!-- end directions page layout -->
+%else_asset%
+    <!-- No map paint layout #28304 -->
+    <div class="content-block content-block--short">%asset_contents%</div>
+%end_asset%
