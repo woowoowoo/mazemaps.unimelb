@@ -15,33 +15,31 @@
 %begin_asset_metadata_ObjectType^contains:Campus%
 <!-- begin Campus layout -->
     <div class="content-block content-block--short"><h1><span class="link-icon link-icon--custom"><svg focusable="false" role="presentation"><use xlink:href="#icon-campaign"></use></svg></span> %asset_short_name%</h1></div>
-    <div class="map-container">
+    <div class="map-container campus">
         <div id="map" class="mazemap"></div>
         <div id="search-input-container" class="search-control-default">
-        <input tabindex="0" id="searchInput" class="search-input" autocomplete="off" type="text" name="search" placeholder="Search">
-        <div id="suggestions" class="search-suggestions default"></div>
+			<input tabindex="0" id="searchInput" class="search-input" autocomplete="off" type="text" name="search" placeholder="Search">
+			<div id="suggestions" class="search-suggestions default"></div>
+		</div>
     </div>
-    </div>
-    <div class="content-block">%asset_contents%</div>
+    <div class="content-block campus">%asset_contents%</div>
 <!-- end Campus layout -->
 %else_begin_asset_metadata_ObjectType^eq:Group%
 <!-- begin Group layout -->
     <div class="content-block content-block--short"><h1><span class="link-icon link-icon--custom"><svg focusable="false" role="presentation"><use xlink:href="#icon-location"></use></svg></span> %globals_asset_name%</h1></div>
-    <div class="map-container">
+    <div class="map-container group">
         <div id="map" class="mazemap"></div>
-        <div id="search-input-container" class="search-control-default">
-        <input tabindex="0" id="searchInput" class="search-input" autocomplete="off" type="text" name="search" placeholder="Search">
-        <div id="suggestions" class="search-suggestions default"></div>
+		<div id="search-input-container" class="search-control-default">
+			<input tabindex="0" id="searchInput" class="search-input" autocomplete="off" type="text" name="search" placeholder="Search">
+			<div id="suggestions" class="search-suggestions default"></div>
+		</div>
     </div>
-    </div>
-    <div class="content-block">%asset_contents%</div>
+    <div class="content-block group">%asset_contents%</div>
 <!-- end Group layout -->
 %else_begin_asset_metadata_ObjectType^contains:POI%
 <!-- begin POI layout -->
-    <div class="content-block content-block--short"><h1><span class="link-icon link-icon--custom"><svg focusable="false" role="presentation">
-    <use xlink:href="#icon-location"></use>
-  </svg></span> %asset_metadata_Name%</h1></div>
-    <div class="content-block content-block--short">
+    <div class="content-block content-block--short"><h1><span class="link-icon link-icon--custom"><svg focusable="false" role="presentation"><use xlink:href="#icon-location"></use></svg></span> %asset_metadata_Name%</h1></div>
+    <div class="content-block content-block--short poi">
             <div class="grid">
                 <div class="cell cell--desk-1of3">
                     <h2 class="heading-card">Location details</h2>
@@ -75,7 +73,7 @@
 %else_asset%
     <div class="content-block content-block--short"><h1><span class="link-icon link-icon--custom"><svg focusable="false" role="presentation"><use xlink:href="#icon-faculty"></use></svg></span> %asset_metadata_Name^append_if: \:% Building %asset_short_name%</h1></div>
 %end_asset%
-    <div class="content-block content-block--short">
+    <div class="content-block content-block--short building">
         <div class="grid">
             <div class="cell cell--desk-1of3">
                 <h2 class="heading-card">Building details</h2>
@@ -150,7 +148,7 @@
             </div>
     </div>
     <!-- complete -->%begin_globals_get_listPOI%
-    <div class="content-block content-block--short">
+    <div class="content-block content-block--short building">
         <!-- list of POIs inside %asset_metadata_BuildingID% -->
           %globals_asset_contents_raw:47145%
     </div>
