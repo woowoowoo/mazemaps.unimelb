@@ -81,7 +81,6 @@
                 <h2 class="heading-card">Building details</h2>
                 <ul>
                     <li>Within: <a href="%asset_parent^as_asset:asset_url%">%asset_parent^as_asset:asset_metadata_Name%</a></li>
-                    <li>Building number: %asset_short_name%</li>
                     %asset_metadata_AlternateName^prepend_if:Also known as\: ^tagif:li%
                     %asset_metadata_StreetAddress^prepend_if:Street address\: ^tagif:li%
                     %asset_metadata_Directions^prepend_if:Extra directions\: ^tagif:li%
@@ -170,6 +169,9 @@
         </div>
     </div>
 <!-- end directions page layout -->
+%else_begin_asset_assetid^eq:53076%
+<!-- Home page -->
+%asset_contents%
 %else_asset%
     <!-- No map paint layout #28304 -->
     <div class="content-block content-block--short">%asset_contents%</div>
