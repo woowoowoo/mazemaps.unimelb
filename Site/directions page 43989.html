@@ -4,16 +4,19 @@
 <div id="routeInfo" aria-live="polite" class="grid grid--3col routeInfo"><!-- route-query route-success avoid-obstacles -->
     <div class="cell" id="fromInfo">
     <h2 class="heading-card">From:</h2>
+    <!-- %globals_get_assetA^as_asset:asset_metadata_POI^prepend_if:poiID % %globals_get_assetA^as_asset:asset_metadata_Latitude^prepend_if:Lat. % %globals_get_assetA^as_asset:asset_metadata_Longitude^prepend_if:Lng. % %globals_get_assetA^as_asset:asset_metadata_Level^prepend_if:Level. ^empty:0% -->
     <p id="fromLocation">
     %begin_globals_get_pointA%
         Point of interest ID %globals_get_pointA%
     %else_begin_globals_get_assetA%
-        %globals_get_assetA^as_asset:asset_name% (
-            %begin_globals_get_assetA^as_asset:asset_metadata_POI%point of interest ID %globals_get_assetA^as_asset:asset_metadata_POI%
-            %else_globals%
-            Lat: %globals_get_assetA^as_asset:asset_metadata_Latitude%, Lng: %globals_get_assetA^as_asset:asset_metadata_Longitude%, Level: %globals_get_assetA^as_asset:asset_metadata_Level^empty:0%
-            %end_globals%
-        )
+    	%begin_globals_get_assetA^as_asset:asset_metadata_Name^neq:{globals_get_assetA^as_asset:asset_short_name}%
+		    %globals_get_assetA^as_asset:asset_metadata_Name% -
+		%end_globals%
+		%begin_globals_get_assetA^as_asset:asset_metadata_ObjectType^eq:Building%
+	    	Building %globals_get_assetA^as_asset:asset_short_name%<!--@@ If it's a building, say so @@-->
+	    %else_globals%
+	        %globals_get_assetA^as_asset:asset_name%
+        %end_globals%
     %else_begin_globals_get_lngA%
         Selected Location
     %else_globals%
