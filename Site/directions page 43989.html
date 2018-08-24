@@ -1,0 +1,51 @@
+<h1><span class="link-icon link-icon--custom"><svg focusable="false" role="presentation">
+<use xlink:href="#icon-directions"></use>
+</svg></span> Directions</h1>
+<div id="routeInfo" aria-live="polite" class="grid grid--3col routeInfo"><!-- route-query route-success avoid-obstacles -->
+    <div class="cell" id="fromInfo">
+    <h2 class="heading-card">From:</h2>
+    <p id="fromLocation">
+    %begin_globals_get_pointA%
+        Point of interest ID %globals_get_pointA%
+    %else_begin_globals_get_assetA%
+        %globals_get_assetA^as_asset:asset_name% (
+            %begin_globals_get_assetA^as_asset:asset_metadata_POI%point of interest ID %globals_get_assetA^as_asset:asset_metadata_POI%
+            %else_globals%
+            Lat: %globals_get_assetA^as_asset:asset_metadata_Latitude%, Lng: %globals_get_assetA^as_asset:asset_metadata_Longitude%, Level: %globals_get_assetA^as_asset:asset_metadata_Level^empty:0%
+            %end_globals%
+        )
+    %else_begin_globals_get_lngA%
+        Selected Location
+    %else_globals%
+        <a href="#" id="fromLocationBtn">Use my location</a>, or click on the map.
+    %end_globals%
+    </p>
+    </div>
+    <div class="cell" id="toInfo">
+    <h2 class="heading-card">To:</h2>
+    <p id="toLocation">
+    %begin_globals_get_pointB%
+        Point of interest ID %globals_get_pointB%
+    %else_begin_globals_get_assetB%
+    %globals_get_assetB^as_asset:asset_name% (
+    %begin_globals_get_assetB^as_asset:asset_metadata_POI%
+    point of interest ID %globals_get_assetB^as_asset:asset_metadata_POI%
+    %else_globals%
+    Lat: %globals_get_assetB^as_asset:asset_metadata_Latitude%, Lng: %globals_get_assetB^as_asset:asset_metadata_Longitude%, Level: %globals_get_assetB^as_asset:asset_metadata_Level^empty:0%
+    %end_globals%
+    )
+    %else_begin_globals_get_lngB%
+    Selected Location
+    %else_globals%
+    <a href="#" id="toLocationBtn" >Use my location</a>, or click on the map.
+    %end_globals%
+    </p>
+    </div>
+    <div class="cell" id="routeOptions">
+    <p class="route-calc">Calculating your route…</p>
+    <p id="startMessage">Click the map to set new start or end points.</p>
+    <p id="routeExtraParameters"><a id="reverseDirection" href="#" >Reverse directions</a>, <a id="avoidObstacles" href="#">Avoid obstacles</a><span class="avoiding-obstacles">Avoiding obstacles</span>.</p>
+    <p id="routeDescription"><!-- Text description of route "6.3km drive, 353 metres walk. 17 minutes" --></p>
+    </div>
+
+</div>
