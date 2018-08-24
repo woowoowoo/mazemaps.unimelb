@@ -46,7 +46,7 @@
                     <ul>
                     <li>Within: <a href="%asset_parent^as_asset:asset_url%">%asset_parent^as_asset:asset_metadata_Name%</a></li>
                     %asset_metadata_AlternateName^prepend_if:Also known as\: ^tagif:li%
-                    %asset_metadata_StreetAddress^empty:{asset_parent^as_asset:asset_metadata_StreetAddress}^prepend_if:Street address\: ^tagif:li%
+                    %asset_parent^as_asset:asset_metadata_StreetAddress^prepend_if:Street address\: ^tagif:li%
                     %asset_metadata_Directions^prepend_if:Extra directions\: ^tagif:li%
 %begin_asset_metadata_InfoURL%
 	        		<li><a href="%asset_metadata_InfoURL%">More information</a></li>
