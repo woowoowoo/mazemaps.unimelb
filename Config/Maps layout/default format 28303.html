@@ -51,7 +51,11 @@
 %begin_asset_metadata_InfoURL%
 	        		<li><a href="%asset_metadata_InfoURL%">More information</a></li>
 %end_asset%
+%begin_asset_metadata_POI%
+	        		<li><a id="getDirectionLnk" href="%globals_asset_url:43989%?pointB=%asset_metadata_POI%">Get directions</a></li>
+%else_asset%
 	        		<li><a id="getDirectionLnk" href="%globals_asset_url:43989%?assetB=%asset_assetid%">Get directions</a></li>
+%end_asset%
                     </ul>
                 <h3 class="heading-card">Share this location</h3>
                 %globals_asset_contents_raw:40555%<!--@@ Share list @@-->
