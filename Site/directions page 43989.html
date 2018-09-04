@@ -30,13 +30,14 @@
     %begin_globals_get_pointB%
         Point of interest ID %globals_get_pointB%
     %else_begin_globals_get_assetB%
-    %globals_get_assetB^as_asset:asset_name% (
-    %begin_globals_get_assetB^as_asset:asset_metadata_POI%
-    point of interest ID %globals_get_assetB^as_asset:asset_metadata_POI%
-    %else_globals%
-    Lat: %globals_get_assetB^as_asset:asset_metadata_Latitude%, Lng: %globals_get_assetB^as_asset:asset_metadata_Longitude%, Level: %globals_get_assetB^as_asset:asset_metadata_Level^empty:0%
-    %end_globals%
-    )
+    	%begin_globals_get_assetB^as_asset:asset_metadata_Name^neq:{globals_get_assetB^as_asset:asset_short_name}%
+		    %globals_get_assetB^as_asset:asset_metadata_Name% -
+		%end_globals%
+		%begin_globals_get_assetB^as_asset:asset_metadata_ObjectType^eq:Building%
+	    	Building %globals_get_assetB^as_asset:asset_short_name%<!--@@ If it's a building, say so @@-->
+	    %else_globals%
+	        %globals_get_assetB^as_asset:asset_name%
+        %end_globals%
     %else_begin_globals_get_lngB%
     Selected Location
     %else_globals%
