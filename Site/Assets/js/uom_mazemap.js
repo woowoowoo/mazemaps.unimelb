@@ -196,7 +196,6 @@ var UOMWirelessGeolocation = function() {
 							timestamp: Date.now()
 						};
 						return resolve(result);
-//						maptrack.event("geoLocate","Click",result);
 					}
 				}).catch(function(e) {
 					reject(e);
