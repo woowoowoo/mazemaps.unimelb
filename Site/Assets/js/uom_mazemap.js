@@ -134,6 +134,7 @@ myMap.on('load', function(){
 			case 'deactivated':
 				geolocateController.setState('working');
 				locationDotController.setState('active');
+				maptrack.event('geoLocate','clickmapcontrol','active');
 				break;
 			case 'active':
 				navigator.geolocation.clearWatch(geoLocationWatchID);
@@ -195,6 +196,7 @@ var UOMWirelessGeolocation = function() {
 							timestamp: Date.now()
 						};
 						return resolve(result);
+//						maptrack.event("geoLocate","Click",result);
 					}
 				}).catch(function(e) {
 					reject(e);
