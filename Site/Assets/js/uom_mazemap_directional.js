@@ -487,13 +487,13 @@ document.getElementById("reverseDirection").onclick=function(e) {
     routingInformation.reserveDirection();
     reseverDirectionDisplay();
     routePath(routingInformation);
-    maptrack.event("routeOptions","Click","reverseDirections");
+    maptrack.event("routeOptions","reverseDirections",document.location.href);
 };
 
 document.getElementById("avoidObstacles").onclick=function(e) {
     e.preventDefault();
     routePath(routingInformation, true);
-    maptrack.event("routeOptions","Click","avoidObstacles");
+    maptrack.event("routeOptions","avoidObstacles",document.location.href);
 };
 
 document.addEventListener('click',function(e){
